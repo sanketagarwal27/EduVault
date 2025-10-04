@@ -18,6 +18,14 @@ const InstitutionSchema = new mongoose.Schema(
         refreshToken: {
             type: String
         },
+        apiUrl: {
+            type: String,
+            default: null
+        },
+        encryptedApiKey: {
+            type: String,
+            default: null
+        }
     },
     {timestamps: true}
 );
