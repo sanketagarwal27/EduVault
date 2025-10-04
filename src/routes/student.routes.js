@@ -5,7 +5,8 @@ import {registerStudent,
     logoutStudent,
     refreshAccessToken,
     changeStudentPassword,
-    getCurrentStudent} from "../controllers/student.controller.js";
+    getCurrentStudent,
+    syncWithPortal} from "../controllers/student.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 
 const router = Router();
@@ -22,5 +23,8 @@ router.route("/refresh").post(refreshAccessToken);
 router.route("/change-password").post(upload.none(), verifyJwtStudent, changeStudentPassword);
 
 router.route("/").get(verifyJwtStudent, getCurrentStudent);
+
+router.route("/sync").get(verifyJwtStudent, syncWithPortal);
+
 
 export default router;

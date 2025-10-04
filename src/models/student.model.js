@@ -42,7 +42,19 @@ const StudentSchema = new mongoose.Schema(
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Certification"
-        }]
+        }],
+        instituteData: {
+            type: Object,
+            default: null
+        },
+        isPortalSynced: {
+            type: Boolean,
+            default: false
+        },
+        lastSyncedAt: {
+            type: Date,
+            default: null
+        }
     },
     {timestamps: true}
 );

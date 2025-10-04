@@ -3,9 +3,12 @@ import { ApiError } from "../utils/ApiError.js";
 import { Student } from "../models/student.model.js"; 
 import { Institution } from "../models/institution.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { decrypt } from "../utils/crypto.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
+import axios from "axios";
+
 
 const generateAccessAndRefreshTokens = async(userId) => {
     try{
@@ -182,11 +185,60 @@ const getCurrentStudent = asyncHandler(async(req,res) => {
     .json(new ApiResponse(200, req.user, "Student fetched successfully"))
 })
 
+const syncWithPortal = asyncHandler(async(req,res) => {
+    const student = await Student.findById(req.user?._id);
+
+    if(!student)
+        throw new ApiError(404, "Student not found !");
+
+    if(!student.institution.apiUrl)
+        throw new ApiError(500, "Error fetching institute API URL !");
+
+    const studentRollNumber = student.roll;
+    if(!studentRollNumber)
+        throw new ApiError(500, "Error fetching roll number !");
+
+    const decryptedApiKey = decrypt(student.institution.encryptedApiKey);
+    if(!decryptedApiKey)
+        throw new ApiError(500, "Error fetching API key !");
+
+    const API_URL = `${student.institution.apiUrl}/${studentRollNumber}`;
+
+    const response = await axios.get(API_URL, {
+        headers: {
+            'Authorization': `Bearer ${decryptedApiKey}`
+        }
+    })
+
+    const instituteData = response.data;
+    if(!instituteData)
+        throw new ApiError(500, "Error fetching institute data !");
+
+    const updatedStudent = await Student.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set: {
+                instituteData: instituteData,
+                isPortalSynced: true,
+                lastSyncedAt: new Date()
+            }
+        },
+        {
+            new: true
+        }
+    );
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, updatedStudent, "Student Synced with Portal Successfully !"));
+})
+
 export {
     registerStudent,
     loginStudent,
     logoutStudent,
     refreshAccessToken,
     changeStudentPassword,
-    getCurrentStudent
+    getCurrentStudent,
+    syncWithPortal
 };
