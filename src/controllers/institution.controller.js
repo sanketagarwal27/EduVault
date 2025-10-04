@@ -5,6 +5,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
+import { encrypt } from "../utils/crypto.js";
 
 const generateAccessAndRefreshTokens = async(userId) => {
     try{
@@ -147,6 +148,20 @@ const getCurrentInstitute = asyncHandler(async(req,res) => {
     .status(200)
     .json(new ApiResponse(200, req.user, "Institute fetched successfully"))
 })
+
+const saveApiDetails = async (req, res) => {
+    const { apiUrl, apiKey } = req.body;
+    const instituteId = req.user._id;
+
+    const encryptedApiKey = encrypt(apiKey);
+
+    await Institution.findByIdAndUpdate(instituteId, {
+        apiUrl: apiUrl,
+        encryptedApiKey: encryptedApiKey,
+    });
+
+    res.status(200).json({ message: 'API details saved securely.' });
+};
 
 export {
     registerInstitute,
