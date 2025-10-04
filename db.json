@@ -1,0 +1,32 @@
+{
+    "students": [
+        {
+            "roll_number": "r-09876",
+            "full_name": "John Doe",
+            "email": "r09876@mockinstitute.ac.in",
+            "programme": "Bachelor of Technology",
+            "department": "Mechanical Engineering",
+            "current semester": 4,
+            "attendance_percentage": 88.5,
+            "attendance_percentage_calulated_on": 75.0,
+            "cgpa": 6.8,
+            "profile_image_url": "https://mockinstitute.ac.in/images/r-09876.jpg",
+            "active_backlogs": ["SubjectA", "SubjectB"],
+            "cleared_backlogs": ["SubjectX", "SubjectY"]
+        },
+        {
+            "roll_number": "r-08126",
+            "full_name": "Michael Doe",
+            "email": "r08126@mockinstitute.ac.in",
+            "programme": "Integrated Masters of Technology",
+            "department": "Electrical Engineering",
+            "current semester": 5,
+            "attendance_percentage": 90,
+            "attendance_percentage_calulated_on": 75.0,
+            "cgpa": 9.5,
+            "profile_image_url": "https://mockinstitute.ac.in/images/r-08126.jpg",
+            "active_backlogs": [],
+            "cleared_backlogs": []
+        }
+    ]
+}
